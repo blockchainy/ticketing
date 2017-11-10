@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-
-import DropDown from './DropDown';
 import 'semantic-ui-css/semantic.min.css';
 
 
@@ -34,7 +32,7 @@ class PriceBox extends Component {
     calculatePriceFromEther() {
         // 1 ether = 1000000000 gwei
         var priceInUSD = this.state.price * this.state.priceOfEther;
-        //priceInUSD = Math.round(priceInUSD * 100) / 1000
+        priceInUSD = Math.round(priceInUSD * 100) / 1000
         this.setState({ priceInUSD });
     }
 

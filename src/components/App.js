@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PriceBox from './PriceBox';
+import TimeSelector from './TimeSelector';
 import logo from '../logo.svg';
 import '../App.css';
 
@@ -13,7 +14,8 @@ class App extends Component {
         </header>
         <p></p>
         <div>
-          <PriceBox />
+          {/* <PriceBox /> */}
+          <TimeSelector/>
         </div>
       </div>
     );
