@@ -11,8 +11,8 @@ import '../App.css';
 
 var web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 
-var myContract = web3.eth.contract([{"constant":false,"inputs":[{"name":"_time","type":"uint256"}],"name":"setTime","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getTime","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"get","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"getNowTime","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"x","type":"string"}],"name":"setTokenName","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_token","type":"string"}],"name":"setName","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[{"name":"_tokenName","type":"string"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"}])
-var contractInstance = myContract.at('0x02ac6b6684f94672861b3360bac2561cd0a0d017');
+var myContract = web3.eth.contract([{"constant":false,"inputs":[{"name":"_amount","type":"uint256"}],"name":"setAmount","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_time","type":"uint256"}],"name":"setTime","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"kill","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getTime","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_price","type":"uint256"}],"name":"setPrice","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getPrice","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"checkBalance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getAmount","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}])
+var contractInstance = myContract.at('0x486351a2b3f3f63c04aeec19281cc7293cab8337');
 
 web3.eth.defaultAccount = web3.eth.accounts[0];
 
@@ -24,10 +24,10 @@ class TimeSelector extends Component {
             startDate: moment(),
             currentTime: 0
         };
-        this.handleChange = this.selectDate.bind(this);
-        this.submitTime = this.submitTime.bind(this);
+        this.selectDate = this.selectDate.bind(this);
+        this.setTime = this.setTime.bind(this);
+        this.getTime = this.getTime.bind(this);        
         this.checkNow = this.checkNow.bind(this);
-        this.checkTime = this.checkTime.bind(this);
     }
 
     selectDate(date) {
@@ -41,29 +41,14 @@ class TimeSelector extends Component {
         console.log(myEpoch);
     }
 
-    testContract() {
-
-        var result = contractInstance.get();
-
-        // set the name to test upon contract creation
-        console.log(`Current Name: ${result}`);
-    }
-
-    updateContract() {
-        contractInstance.setTokenName("FUCK");
-        
-        var updatedresult = contractInstance.get();
-        console.log(`Updated: ${updatedresult}`);
-    }
-
-    submitTime() {
+    setTime() {
         // check to see if smart contracts can compare strings
         contractInstance.setTime(this.state.currentTime)
         var time = contractInstance.getTime();
         console.log(`Current Time in smart contract is: ${time}`);
     }
 
-    checkTime() {
+    getTime() {
         var updatedTime = contractInstance.getTime();
         console.log(`Updated Time: ${updatedTime}`);
     }
@@ -83,15 +68,16 @@ class TimeSelector extends Component {
                     showTimeSelect
                     dateFormat="LLL"
                 />
+                <p></p>
 
-                <button class="ui animated button" tabindex="0" onClick={this.submitTime}>
+                <button class="ui animated button" tabindex="0" onClick={this.setTime}>
                     <div class="visible content">Submit Time</div>
                     <div class="hidden content">
                         <i class="right arrow icon"></i>
                     </div>
                 </button>
 
-                <button class="ui animated button" tabindex="0" onClick={this.checkTime}>
+                <button class="ui animated button" tabindex="0" onClick={this.getTime}>
                     <div class="visible content">Check Time</div>
                     <div class="hidden content">
                         <i class="right arrow icon"></i>
