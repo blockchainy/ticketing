@@ -51,40 +51,12 @@ contract TicketSale {
     
     // should return all wei/ether inside contract to owner
     function kill() payable returns (bool) {
-        // make kill only usable after given time
+        // TODO: MAKE THIS TIME SENSITIVE
         selfdestruct(owner);
         return true;
     }
-    
-    function buyTicketsFromIssuer() payable returns (bool) {
-        
-        require(tickets[owner] >= 1 && msg.value >= price);
-        
-        this.transfer(msg.value.sub(price));
-        
-        tickets[owner] = tickets[owner].sub(1);
-        tickets[msg.sender] = tickets[msg.sender].add(1);
-        
-        return true;
-    }
-    
-    // buying ticket and issues refund if amount is more than price
-    function buyTicketFromIssuerRefund() payable returns (bool) {
-        require(tickets[owner] >= 1 && msg.value >= price);
-        
-        if(msg.value == price) {
-            this.transfer(msg.value.sub(price));
-        } else {
-            this.transfer(msg.value.sub(price));
-            msg.sender.transfer(msg.value.sub(price));
-        }
 
-        tickets[owner] = tickets[owner].sub(1);
-        tickets[msg.sender] = tickets[msg.sender].add(1);
-        return true;
-    }
-
-    // buying multiple tickets
+    // buying multiple tickets by inputting amount wanted to purchase
     function buyTickets(uint256 _amount) payable returns (bool) {
         uint256 ticketPrice = price * _amount;
         require(
@@ -112,4 +84,7 @@ contract TicketSale {
         return this.balance;
     }
     
+    function getAddress() constant returns (address) {
+        return msg.sender;
+    }
 }
