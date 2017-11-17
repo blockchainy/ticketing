@@ -83,6 +83,26 @@ contract TicketSale {
         tickets[msg.sender] = tickets[msg.sender].add(1);
         return true;
     }
+
+    // buying multiple tickets
+    function buyTickets(uint256 _amount) payable returns (bool) {
+        uint256 ticketPrice = price * _amount;
+        require(
+            tickets[owner] >= _amount && 
+            msg.value >= ticketPrice
+            );
+        
+        if (msg.value == ticketPrice) {
+            this.transfer(msg.value.sub(ticketPrice));
+        } else {
+            this.transfer(msg.value.sub(ticketPrice));
+            msg.sender.transfer(msg.value.sub(ticketPrice));
+        }
+
+        tickets[owner] = tickets[owner].sub(_amount);
+        tickets[msg.sender] = tickets[msg.sender].add(_amount);
+        return true;
+    } 
     
     function howMuchEtherAtAddress (address _address) constant returns (uint256) {
         return _address.balance;
