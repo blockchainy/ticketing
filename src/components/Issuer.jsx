@@ -3,6 +3,9 @@ import axios from 'axios';
 import Web3 from 'web3';
 import contract from 'truffle-contract';
 
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+
+import TextField from 'material-ui/TextField';
 import TicketSale from '../build/contracts/TicketSale.json';
 
 import 'semantic-ui-css/semantic.min.css';
@@ -16,9 +19,9 @@ var MyContract = contract(TicketSale);
 
 // set default data for the contract
 MyContract.defaults({
-    from: '0x8812460e9f6361dfac76e37b1da12b0967126480',
+    from: '0x5b0bfde8158d17d55399f69415ecc26236e94530',
     gas: 4712388,
-    gasPrice: 100000000000
+    gasPrice: 1000000000
 })
 
 MyContract.setProvider(provider);
@@ -48,7 +51,6 @@ class Issuer extends Component {
 
     deployContract() {
         let contractInstance;
-
         MyContract.new()
             .then(instance => {
                 contractInstance = instance;
@@ -66,6 +68,7 @@ class Issuer extends Component {
             })
             .then(supply => {
                 console.log(`Old Supply: ${supply}`)
+                // set all the data and push it to the contract
                 contractInstance.setSupply(this.state.supply)
                 contractInstance.setName(this.state.name)
                 contractInstance.setPrice(this.fromUsdToWei(this.state.price))
@@ -81,6 +84,19 @@ class Issuer extends Component {
             })
             .then(price => {
                 console.log(`Price: ${price}`);
+                axios.post('http://localhost:1337/updateDB', {
+                    // passing your url to your express server
+                    address: this.state.contractAddress,
+                    name: this.state.name,
+                    price: this.state.price,
+                    supply: this.state.supply
+                })
+                    .then(function (response) {
+                        console.log(response);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
             })
             .catch(error => {
                 console.log(`${error}`);
@@ -100,26 +116,23 @@ class Issuer extends Component {
     render() {
         return (
             <div>
-                <div>
-                    Name: 
-                     <input
+                <MuiThemeProvider>
+                    <TextField
+                        hintText="Ticket Name"
                         onChange={event => this.setState({ name: event.target.value })}
                     />
-                </div>
-                <p></p>
-                <div>
-                    Set Price (in USD): 
-                     <input
+                    <br/>
+                    <TextField
+                        hintText="Set Price (in USD)"
                         onChange={event => this.setState({ price: event.target.value })}
                     />
-                </div>
-                <p></p>
-                <div>
-                    Number of Tickets:
-                     <input
+                    <br/>
+                    <TextField
+                        hintText="Number of Tickets"
                         onChange={event => this.setState({ supply: event.target.value })}
                     />
-                </div>
+                    <br/>
+                </MuiThemeProvider>
                 <p></p>
                 <button class="ui animated button" tabindex="0" onClick={this.deployContract}>
                     <div class="visible content">Deploy Contract</div>
@@ -127,8 +140,6 @@ class Issuer extends Component {
                         <i class="right arrow icon"></i>
                     </div>
                 </button>
-
-
 
                 <div>Contract Address: {this.state.contractAddress}</div>
                 <p></p>
