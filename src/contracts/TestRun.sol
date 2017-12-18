@@ -10,8 +10,15 @@ contract TicketSale {
     uint256 public price;
     uint256 public supply;
     string public name;
+    uint256 id;
+
+    address[] sellers;
 
     mapping(address => uint256) tickets;
+    mapping(address => uint256) forSale;
+    mapping (address => uint256) public arrayIndexes;
+
+    bool public afterMarketIsClosed = false;    
     
     function TicketSale() payable {
         owner = msg.sender;
@@ -71,6 +78,44 @@ contract TicketSale {
         tickets[msg.sender] = tickets[msg.sender].add(_amount);
         return true;
     }
+
+    function buyTicketFromSeller(address buyFrom) public payable {
+        require(
+            forSale[buyFrom] >= 1 && 
+            msg.value >= price &&
+            afterMarketIsClosed == false
+        );
+        
+        // this line refunds
+        msg.sender.transfer(msg.value.sub(price));
+        // this gives the seller the ether
+        buyFrom.transfer(price);
+        
+        forSale[buyFrom] = forSale[buyFrom].sub(1);
+        tickets[msg.sender] = tickets[msg.sender].add(1);
+
+        // remove from sellers array
+        if (forSale[buyFrom] < 1) {
+            id = arrayIndexes[buyFrom];
+            delete sellers[id];
+        }
+         
+    }
+
+    function sellTicket() public {
+        require(tickets[msg.sender] >= 1 && afterMarketIsClosed == false);
+        
+        if (forSale[msg.sender] == 0) {
+            // can't delete at array, refer to eth.x
+            
+            id = sellers.length;
+            arrayIndexes[msg.sender] = id;
+            sellers.push(msg.sender);
+        }
+        
+        tickets[msg.sender] = tickets[msg.sender].sub(1);
+        forSale[msg.sender] = forSale[msg.sender].add(1);
+    }
     
     function howMuchEtherAtAddress (address _address) constant returns (uint256) {
         return _address.balance;
@@ -82,6 +127,10 @@ contract TicketSale {
     
     function numberOfTicketFromAddress(address _address) constant returns (uint256) {
         return tickets[_address];
+    }
+
+    function ticketsAtForSale(address _address) constant returns (uint256) {
+        return forSale[_address];
     }
     
     function getCurrentAddress() constant returns (address) {
@@ -96,6 +145,10 @@ contract TicketSale {
         return owner;
     }
     
+    function getSellers() public constant returns (address[]) {
+        return sellers;
+    }
+    
     function returnWeiInWallet() constant returns (uint256) {
         return msg.sender.balance;
     }
@@ -103,6 +156,7 @@ contract TicketSale {
     function killContract() constant returns (bool) {
         require(msg.sender == owner);
         selfdestruct(owner);
+        return true;
     }
      
 }
