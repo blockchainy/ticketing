@@ -1,3 +1,7 @@
+// following code lets you read/write to contract 
+// upload ticket v1 
+// moved to issuer.jsx
+
 import React, { Component } from 'react';
 import axios from 'axios';
 import Web3 from 'web3';

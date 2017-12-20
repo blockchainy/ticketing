@@ -1,3 +1,6 @@
+// following code is testing contract deployment using fs & solc
+// deprecated contract move to issuer
+
 import React, { Component } from 'react';
 import fs from 'fs';
 import solc from 'solc';

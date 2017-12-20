@@ -1,17 +1,14 @@
 import React, { Component } from 'react';
-// import PriceBox from './PriceBox';
-// import TimeSelector from './TimeSelector';
-import Issuer from './Issuer';
+import { BrowserRouter } from 'react-router-dom';
 
-// import PleaseWork from './web3test';
-
-
-// import ContractCreator from './ContractCreator';
+// ======RUN ISSUER FOR FULL CONTEXT========
+// import Issuer from './Issuer';
 
 
-import Buyer from './Buyer';
-
-// import Test from './Test';
+// import ContractTable from './ContractTable';
+// import TableTest from './TablesClass';
+// ======RUN CONTRACTTABLEWITHWEB3 FOR FULL BUYER PERSPECTIVE=======
+import ContractTableWithWeb3 from './ContractTableWithWeb3';
 
 import logo from '../logo.svg';
 import '../App.css';
@@ -26,13 +23,10 @@ class App extends Component {
         </header>
         <p></p>
         <div>
-          {/* <PriceBox /> */}
-          {/* <TimeSelector/> */}
           {/* <Issuer/> */}
-          {/* <Test/> */}
-          <Issuer/>
-          {/* <ContractCreator/> */}
-          {/* <PleaseWork/> */}
+          {/* <ContractTable/> */}
+          {/* <TableTest/> */}
+          <ContractTableWithWeb3/>
         </div>
       </div>
     );

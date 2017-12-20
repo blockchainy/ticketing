@@ -5,6 +5,16 @@ import 'react-table/react-table.css'
 
 class Table extends Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            address: '',
+            etherInWallet: 0,
+            amount: 0,
+            amountOfTickets: 0
+        };
+    }
+
     render() {
 
         const data = [{

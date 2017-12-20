@@ -3,14 +3,14 @@ const contract = require('truffle-contract');
 
 const HelloWorld = require('../build/contracts/HelloWorld.json')
 
-if (typeof web3 !== 'undefined') {
-    web3Provider = web3.currentProvider;
-} else {
-    // If no injected web3 instance is detected, fallback to the TestRPC
-    web3Provider = new Web3.providers.HttpProvider('http://localhost:8545');
-}
+// if (typeof web3 !== 'undefined') {
+//     web3Provider = web3.currentProvider;
+// } else {
+//     // If no injected web3 instance is detected, fallback to the TestRPC
+//     web3Provider = new Web3.providers.HttpProvider('http://localhost:8545');
+// }
 
-var web3 = new Web3(web3Provider);
+var web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
 
 var provider = new Web3.providers.HttpProvider("http://localhost:8545");
 
@@ -18,19 +18,17 @@ var MyContract = contract(HelloWorld);
 MyContract.setProvider(provider);
 
 // non remix deployment
-var c;
 MyContract.new()
-    .then(instance => {
-        c = instance;
-        return c.getCreator();
-    })
-    .then(result => {
-        console.log(result);
-    })
-    .catch(error => {
-        console.log(`${error}`);
-    })
-
+.then(instance => {
+    c = instance;
+    return c.getCreator();
+})
+.then(result => {
+    console.log(result);
+})
+.catch(error => {
+    console.log(`${error}`);
+})
 // // If deployed through remix
 // MyContract.at('0xdec4db289327ad4781099bcf96ac0141785f5ef4')
 //     .then(instance => {

@@ -1,0 +1,4 @@
+# ignore everything in this file
+
+node_modules
+dev.js

@@ -4,15 +4,13 @@ import Web3 from 'web3';
 import contract from 'truffle-contract';
 
 // import Table from './Tables';
-import TableTest from './Tables';
+import TableTest from './BuyTables';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import TicketSale from '../build/contracts/TicketSale.json';
 
-
 const web3Provider = new Web3.providers.HttpProvider('http://localhost:8545');
-
 
 var web3 = new Web3(web3Provider);
 
@@ -21,7 +19,7 @@ var provider = new Web3.providers.HttpProvider("http://localhost:8545");
 var TicketSaleContract = contract(TicketSale);
 
 TicketSaleContract.defaults({
-    from: '0x417198095d8b3c0f382ede3cf1e28fd8b74f4f11',
+    from: '0x541995f53f0102a39e055856c68f599a20838ac7',
     gas: 4712388,
     gasPrice: 100000000000
 })
@@ -52,19 +50,19 @@ class ContractTableWithWeb3 extends Component {
             })
             .then(name => {
                 console.log(`Name of ticket trying to purchase: ${name}`);
-                return contractInstance.numberOfTicketFromAddress('0x417198095d8b3c0f382ede3cf1e28fd8b74f4f11')
+                return contractInstance.numberOfTicketFromAddress('0x541995f53f0102a39e055856c68f599a20838ac7')
             })
             .then(numOfTix => {
                 console.log(`Number of tickets before purchase: ${numOfTix}`);
                 contractInstance.buyMultipleTickets(2, { value: 507087936329796580 })
-                return contractInstance.numberOfTicketFromAddress('0x417198095d8b3c0f382ede3cf1e28fd8b74f4f11')
+                return contractInstance.numberOfTicketFromAddress('0x541995f53f0102a39e055856c68f599a20838ac7')
             })
             .then(afterTix => {
                 console.log(`Number of tickets after purhcase: ${afterTix}`);
-                return contractInstance.numberOfTicketFromAddress('0x417198095d8b3c0f382ede3cf1e28fd8b74f4f11')
+                return contractInstance.numberOfTicketFromAddress('0x541995f53f0102a39e055856c68f599a20838ac7')
             })
             .then(numberOfTickets => {
-                console.log(`You (0x417198095d8b3c0f382ede3cf1e28fd8b74f4f11) now have ${numberOfTickets}`);
+                console.log(`You (0x541995f53f0102a39e055856c68f599a20838ac7) now have ${numberOfTickets}`);
             })
             .catch(error => console.log(error))
 
@@ -120,7 +118,7 @@ class ContractTableWithWeb3 extends Component {
                                 prop: "price"
                             },
                             {
-                                name: "Supply",
+                                name: "Total Supply",
                                 prop: "supply"
                             }
                         ]}

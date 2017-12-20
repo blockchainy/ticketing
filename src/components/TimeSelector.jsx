@@ -22,7 +22,8 @@ class TimeSelector extends Component {
         super(props)
         this.state = {
             startDate: moment(),
-            currentTime: 0
+            currentTime: 0,
+            data: 0
         };
         this.selectDate = this.selectDate.bind(this);
         this.setTime = this.setTime.bind(this);

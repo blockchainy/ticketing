@@ -97,7 +97,7 @@ class SellTicket extends Component {
             })
             .then(sellers => {
                 console.log(`These are the sellers: ${sellers}`);
-                this.setState({ sellers })
+                // this.setState({ sellers })
                 console.log(`These are teh sellers FROM STATE: ${this.state.sellers}`);
                 console.log(`This is the conrtact address: ${this.state.address}`);
             })

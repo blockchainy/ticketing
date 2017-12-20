@@ -1,6 +1,10 @@
+// testing REST API with axios and setting data into state
+// don't need to push array, just have response.data
+// moved onto ContractTable.jsx 
+
 import React, { Component } from 'react';
 
-const axios = require('axios');
+import axios from 'axios';
 
 class Database extends Component {
     constructor(props) {
@@ -9,7 +13,6 @@ class Database extends Component {
             contractAddress: [],
             ticketName: [],
         };
-
         this.postInfo = this.postInfo.bind(this);
     }
 
@@ -26,6 +29,7 @@ class Database extends Component {
     }
 
     // grabs every row data from db and store it within state 
+    // =====SHOULD NOT RUN TWICE OR KEEPS APPENDING TO STATE=====
     postInfo() {
         axios.get('http://localhost:1337/selectAll')
             .then(response => {

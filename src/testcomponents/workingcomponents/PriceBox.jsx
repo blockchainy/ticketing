@@ -21,7 +21,6 @@ class PriceBox extends Component {
     }
 
     calculatePriceFromWei() {
-        // 1 ether = 1000000000 gwei
         // 1 ether = 1000000000000000000 wei
         var priceInEther = this.state.price / 1000000000000000000;
         var priceInUSD = priceInEther * this.state.priceOfEther;
