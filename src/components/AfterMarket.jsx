@@ -19,14 +19,14 @@ var TicketSaleContract = contract(TicketSale);
 
 // set default data for the contract
 TicketSaleContract.defaults({
-    from: '0x541995f53f0102a39e055856c68f599a20838ac7',
+    from: '0x8d4d0c76132858d887d02a6ace602700a39795d0',
     gas: 4712388,
     gasPrice: 1000000000
 })
 
 TicketSaleContract.setProvider(provider);
 
-class SellTicket extends Component {
+class AfterMarket extends Component {
 
     constructor(props) {
         super(props);
@@ -35,6 +35,7 @@ class SellTicket extends Component {
             address: props.address
         };
         this.sellTicket = this.sellTicket.bind(this);
+        this.buyTicket = this.buyTicket.bind(this);
     }
 
 
@@ -66,7 +67,19 @@ class SellTicket extends Component {
             })
             .then(sellers => {
                 console.log(`These are the sellers: ${sellers}`);
-                this.setState({ sellers })
+
+                // this is meant to remove all sold out tickets from seller index 
+                // solidity can't properly remove an index at array so you use this instead
+                // also used below in componentWillMount
+                function isEmpty(value, index, array) {
+                    if (value == '0x0000000000000000000000000000000000000000') {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }
+                var newSellers = sellers.filter(isEmpty);
+                this.setState({ sellers: newSellers })
             })
             .catch(error => console.log(error))
     }
@@ -88,6 +101,30 @@ class SellTicket extends Component {
 
     // }
 
+    //======TODO======
+    // BUY TICKET FROM OTHER PERSON
+    buyTicket(address) {
+        let contractInstance;
+        TicketSaleContract.at(this.state.address)
+            .then(instance => {
+                contractInstance = instance;
+                return contractInstance.getName();
+            })
+            .then(name => {
+                console.log(`Name of ticket trying to buy: ${name}`);
+                return contractInstance.numberOfTicketFromAddress('0x8d4d0c76132858d887d02a6ace602700a39795d0')
+            })
+            .then(beforeTix => {
+                console.log(`Number of tickets before buying ${beforeTix}`);
+                contractInstance.buyTicketFromSeller(address, { value: 507087936329796580 })
+                return contractInstance.numberOfTicketFromAddress('0x8d4d0c76132858d887d02a6ace602700a39795d0')
+            })
+            .then(afterTix => {
+                console.log(`Number of tickets after buying ${afterTix}`);
+            })
+            .catch(error => console.log(error))
+    }
+
     componentWillMount() {
         let contractInstance;
         TicketSaleContract.at(this.state.address)
@@ -96,10 +133,21 @@ class SellTicket extends Component {
                 return contractInstance.getSellers();
             })
             .then(sellers => {
+
+                function isEmpty(value, index, array) {
+                    if (value == '0x0000000000000000000000000000000000000000') {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }
+
+                var newSellers = sellers.filter(isEmpty);
+
                 console.log(`These are the sellers: ${sellers}`);
-                // this.setState({ sellers })
-                console.log(`These are teh sellers FROM STATE: ${this.state.sellers}`);
-                console.log(`This is the conrtact address: ${this.state.address}`);
+                this.setState({ sellers: newSellers })
+                console.log(`These are the sellers FROM STATE: ${this.state.sellers}`);
+                console.log(`This is the contract address: ${this.state.address}`);
             })
             .catch(error => console.log(error))
     }
@@ -117,15 +165,12 @@ class SellTicket extends Component {
                 <br />
                 <MuiThemeProvider>
                     <Tables
-                        data={this.state.sellers}
+                        sellers={this.state.sellers}
+                        buyTicket={this.buyTicket}
                         header={[
                             {
                                 name: "Seller Address",
                                 prop: "sellerAddress",
-                            },
-                            {
-                                name: "Price",
-                                prop: "price"
                             }
                         ]}
                     />
@@ -135,4 +180,5 @@ class SellTicket extends Component {
     }
 }
 
-export default SellTicket;
+export default AfterMarket;
+
