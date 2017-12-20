@@ -19,7 +19,7 @@ var MyContract = contract(TicketSale);
 
 // set default data for the contract
 MyContract.defaults({
-    from: '0x5b0bfde8158d17d55399f69415ecc26236e94530',
+    from: '0x1af5e5edd72734a106d0a982f112e45dc235f8ae',
     gas: 4712388,
     gasPrice: 1000000000
 })
@@ -43,6 +43,8 @@ class Issuer extends Component {
         this.fromUsdToWei = this.fromUsdToWei.bind(this);
     }
 
+    //=====BUG======
+    // if user submits multiple tickets price multiplies every time
     fromUsdToWei(price) {
         var priceInEther = price / this.state.priceOfEther;
         var priceInWei = priceInEther * 1000000000000000000;
@@ -72,6 +74,9 @@ class Issuer extends Component {
                 contractInstance.setSupply(this.state.supply)
                 contractInstance.setName(this.state.name)
                 contractInstance.setPrice(this.fromUsdToWei(this.state.price))
+                // store in wei for db
+                const price = this.fromUsdToWei(this.state.price);
+                this.setState({ price })
                 return contractInstance.getSupply();
             })
             .then(newSupply => {
@@ -115,7 +120,7 @@ class Issuer extends Component {
 
     render() {
         return (
-            <div>
+            <div style={{marginLeft: 20}}>
                 <MuiThemeProvider>
                     <TextField
                         hintText="Ticket Name"

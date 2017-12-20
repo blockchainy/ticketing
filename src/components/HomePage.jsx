@@ -9,6 +9,8 @@ import '../App.css';
 
 import Issuer from './Issuer';
 import ContractTable from './ContractTableWithWeb3';
+import TicketInfo from './TicketInformation';
+import AfterMarket from './AfterMarket';
 
 const HomePage = () => (
     <div>
@@ -26,8 +28,14 @@ const HomePage = () => (
                 <Link to="/buy">
                     <RaisedButton label="Buy Tickets" />
                 </Link>
+                <Link to="/sell">
+                    <RaisedButton label="Sell Tickets" />
+                </Link>
+                <Route path="/sell" component={AfterMarket} />
                 <Route path="/issue" component={Issuer} />
                 <Route path="/buy" component={ContractTable} />
+                <Route exact={true} path="/ticketinfo" component={TicketInfo} />
+                <Route path="/ticketinfo/:ticketId" component={TicketInfo} />
             </MuiThemeProvider>
         </div>
     </div>
