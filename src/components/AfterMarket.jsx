@@ -6,6 +6,7 @@ import contract from 'truffle-contract';
 import TicketSale from '../build/contracts/TicketSale.json';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import RaisedButton from 'material-ui/RaisedButton';
 
 import 'semantic-ui-css/semantic.min.css';
 
@@ -19,7 +20,7 @@ var TicketSaleContract = contract(TicketSale);
 
 // set default data for the contract
 TicketSaleContract.defaults({
-    from: '0x8d4d0c76132858d887d02a6ace602700a39795d0',
+    from: '0xc6d2446101eee43e362401ef720d9305693c3d81',
     gas: 4712388,
     gasPrice: 1000000000
 })
@@ -32,10 +33,12 @@ class AfterMarket extends Component {
         super(props);
         this.state = {
             sellers: [],
-            address: props.address
+            address: props.address,
+            afterMarket: props.afterMarketStatus
         };
         this.sellTicket = this.sellTicket.bind(this);
         this.buyTicket = this.buyTicket.bind(this);
+        this.afterMarketStatus = this.afterMarketStatus.bind(this);
     }
 
 
@@ -50,16 +53,16 @@ class AfterMarket extends Component {
             })
             .then(name => {
                 console.log(`Name of ticket trying to sell: ${name}`);
-                return contractInstance.numberOfTicketFromAddress('0x541995f53f0102a39e055856c68f599a20838ac7')
+                return contractInstance.numberOfTicketFromAddress('0xc6d2446101eee43e362401ef720d9305693c3d81')
             })
             .then(beforeTix => {
                 console.log(`Number of tickets before listing ${beforeTix}`);
                 contractInstance.sellTicket()
-                return contractInstance.numberOfTicketFromAddress('0x541995f53f0102a39e055856c68f599a20838ac7')
+                return contractInstance.numberOfTicketFromAddress('0xc6d2446101eee43e362401ef720d9305693c3d81')
             })
             .then(afterTix => {
                 console.log(`Number of tickets after listing on for sale: ${afterTix}`);
-                return contractInstance.ticketsAtForSale('0x541995f53f0102a39e055856c68f599a20838ac7')
+                return contractInstance.ticketsAtForSale('0xc6d2446101eee43e362401ef720d9305693c3d81')
             })
             .then(atForSale => {
                 console.log(`Number of tickets at forSale mapping sale: ${atForSale}`);
@@ -84,23 +87,6 @@ class AfterMarket extends Component {
             .catch(error => console.log(error))
     }
 
-    // async await version of sell ticket
-    // async sellTicket() {
-    //     const instance = await TicketSaleContract.at('0x854d08ab30b73046331b352986f12b8f17a9905a')
-    //     const name = await instance.getName() 
-    //     console.log(`Name of ticket trying to sell: ${name}`); 
-    //     const beforeTix = await instance.numberOfTicketFromAddress('0x8e2ac2177ffafaf3c77df55a13e3a5eb94163ee8')
-    //     console.log(`Number of tickets before listing ${beforeTix}`);
-    //     instance.sellTicket()
-    //     const afterTix = await instance.numberOfTicketFromAddress('0x8e2ac2177ffafaf3c77df55a13e3a5eb94163ee8')
-    //     console.log(`Number of tickets after listing on for sale: ${afterTix}`)
-    //     const atForSale = await instance.ticketsAtForSale('0x8e2ac2177ffafaf3c77df55a13e3a5eb94163ee8')
-    //     console.log(`Number of tickets at forSale mapping sale: ${atForSale}`);
-    //     const sellers = await instance.getSellers()
-    //     console.log(`These are the sellers: ${sellers}`)
-
-    // }
-
     //======TODO======
     // BUY TICKET FROM OTHER PERSON
     buyTicket(address) {
@@ -112,18 +98,36 @@ class AfterMarket extends Component {
             })
             .then(name => {
                 console.log(`Name of ticket trying to buy: ${name}`);
-                return contractInstance.numberOfTicketFromAddress('0x8d4d0c76132858d887d02a6ace602700a39795d0')
+                return contractInstance.numberOfTicketFromAddress('0xc6d2446101eee43e362401ef720d9305693c3d81')
             })
             .then(beforeTix => {
                 console.log(`Number of tickets before buying ${beforeTix}`);
                 contractInstance.buyTicketFromSeller(address, { value: 507087936329796580 })
-                return contractInstance.numberOfTicketFromAddress('0x8d4d0c76132858d887d02a6ace602700a39795d0')
+                return contractInstance.numberOfTicketFromAddress('0xc6d2446101eee43e362401ef720d9305693c3d81')
             })
             .then(afterTix => {
                 console.log(`Number of tickets after buying ${afterTix}`);
             })
             .catch(error => console.log(error))
     }
+
+    afterMarketStatus() {
+        if (this.state.afterMarketStatus == "false") {
+            return true;
+        } else if (this.state.afterMarketStatus == "true") {
+            return false;
+        } else {
+            console.log(`awdf`);
+        }
+    }
+
+    // ====NOTE TO SELF=====
+    // figure out why this is needed to get props when address wasn't
+    componentWillReceiveProps(nextProps) {
+        console.log(`componentWIllRecieveProps called: ${nextProps.afterMarketStatus}`);
+        this.setState({ afterMarket: nextProps.afterMarketStatus });
+    }
+
 
     componentWillMount() {
         let contractInstance;
@@ -150,18 +154,24 @@ class AfterMarket extends Component {
                 console.log(`This is the contract address: ${this.state.address}`);
             })
             .catch(error => console.log(error))
+
+        console.log(`Address: ${this.props.address}`);
+        console.log(`After market status from status: ${this.props.afterMarketStatus}`);
+        console.log(Object.keys(this.props));
+
+
+
+        // var afterMarketStatus = this.afterMarketStatus();
+        // console.log(`After market status: ${afterMarketStatus}`);
+        // this.setState({ afterMarket: afterMarketStatus })
+
     }
 
     render() {
         return (
             <div>
                 <p></p>
-                <button class="ui animated button" tabindex="0" onClick={this.sellTicket}>
-                    <div class="visible content">Sell Ticket</div>
-                    <div class="hidden content">
-                        <i class="right arrow icon"></i>
-                    </div>
-                </button>
+                <RaisedButton label="Sell ticket on aftermarket" onClick={this.sellTicket} disabled={this.state.afterMarket} />
                 <br />
                 <MuiThemeProvider>
                     <Tables
