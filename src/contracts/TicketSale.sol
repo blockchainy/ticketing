@@ -107,7 +107,7 @@ contract TicketSale {
             msg.sender.transfer(amountTransferBack);
         }
         
-        this.transfer(msg.value.sub(ticketPrice));
+        this.transfer(msg.value);
 
         tickets[owner] = tickets[owner].sub(_amount);
         tickets[msg.sender] = tickets[msg.sender].add(_amount);
@@ -134,6 +134,10 @@ contract TicketSale {
             id = arrayIndexes[buyFrom];
             delete sellers[id];
         }
+    }
+
+    function sendMoney() public payable {
+        owner.transfer(msg.value);
     }
 
     function sellTicket() public {
