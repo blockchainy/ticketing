@@ -102,17 +102,12 @@ contract TicketSale {
             msg.value >= ticketPrice
             );
 
-        if (msg.value > price) {
+        if (msg.value > ticketPrice) {
             uint256 amountTransferBack = msg.value.sub(price);
             msg.sender.transfer(amountTransferBack);
         }
         
-        if (msg.value == ticketPrice) {
-            this.transfer(msg.value.sub(ticketPrice));
-        } else {
-            this.transfer(msg.value.sub(ticketPrice));
-            msg.sender.transfer(msg.value.sub(ticketPrice));
-        }
+        this.transfer(msg.value.sub(ticketPrice));
 
         tickets[owner] = tickets[owner].sub(_amount);
         tickets[msg.sender] = tickets[msg.sender].add(_amount);
@@ -139,7 +134,6 @@ contract TicketSale {
             id = arrayIndexes[buyFrom];
             delete sellers[id];
         }
-         
     }
 
     function sellTicket() public {
